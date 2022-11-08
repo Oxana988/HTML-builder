@@ -18,4 +18,4 @@ fs.mkdir(pathToFolder, () => {
         fs.copyFile(path.join(__dirname, 'files', file), path.join(__dirname, 'files-copy', file), () => { });
     }
   })
-});
+})

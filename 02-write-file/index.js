@@ -9,7 +9,7 @@ fs.open(pathToFile, 'w', (err) => {
 })
 stdin.on('data', data => {
     if (data.toString().trim() === 'exit') {
-        stdout.write('Ввод текста завершен!')
+        stdout.write('Ввод текста завершен!');
         process.exit();
     };
     fs.appendFile(pathToFile, data, (err) => {
@@ -17,4 +17,7 @@ stdin.on('data', data => {
         console.log('Продолжите ввод текста!');
     })
 })
-process.on('SIGINT', () => process.exit());
+process.on('SIGINT', () => {
+    console.log('Ввод текста завершен!');
+    process.exit();
+})
