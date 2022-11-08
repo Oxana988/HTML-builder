@@ -7,9 +7,8 @@ fs.mkdir(pathToFolder, () => {
   fs.readdir(pathToFolder, (err, files) => {
     if (err) throw err;
     for (let file of files) {
-        let pathToFile = path.join(__dirname, 'files-copy', file.name);
-        fs.unlink(pathToFile, (err) => { 
-        if (err) throw err 
+        fs.unlink(path.join(__dirname, 'files-copy', file), (err) => { 
+        if (err) throw err;
     })
     }
   });
