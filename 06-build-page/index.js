@@ -4,6 +4,7 @@ const pathToFolder = path.join(__dirname, 'project-dist');
 const pathToSourceFolder = path.join(__dirname, 'styles');
 const pathToFolderAssets = path.join(__dirname, './project-dist/assets');
 const pathToSourceFolderAssets = path.join(__dirname, 'assets');
+const pathToTemplate = path.join(__dirname, 'template.html');
 
 fs.mkdir(pathToFolder, {withFileTypes: true}, () => {
     //css
@@ -32,5 +33,33 @@ fs.mkdir(pathToFolder, {withFileTypes: true}, () => {
             })
         }
     })
+
+    //html
+    const readableStream = fs.createReadStream(pathToTemplate, 'utf-8');
+    function buildHtml() {
+        const pathToFileHtml = fs.createWriteStream(path.join(pathToFolder,'index.html'));
+        readableStream.on('data', chunk => {
+            let text = '';
+            const addTag = function(chunk) {    
+                text = chunk;   
+                const startIndex = text.indexOf('{{');
+                const endIndex = text.indexOf('}}');
+                const tag = text.slice(startIndex + 2, endIndex);        
+                const readableStream = fs.createReadStream(path.join(__dirname, 'components', tag + '.html'));
+                let component = '';
+                readableStream.on('data', (chunk) => {         
+                    component = component + chunk.toString();
+                    text = text.slice(0, startIndex) + component + text.slice(endIndex + 2);
+                    if(text.indexOf('}}') + 1) {
+                        addTag(text);
+                    } else {
+                        pathToFileHtml.write(text);
+                    }
+                });            
+            };
+            addTag(chunk);
+        });
+    }
+    buildHtml();
     
 })
